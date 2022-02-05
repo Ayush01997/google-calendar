@@ -1,0 +1,23 @@
+<input matInput [matDatepicker]="picker" placeholder="Choose a date">
+<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+<mat-datepicker #picker [matDatepickerFilter]="weekendsDatesFilter"></mat-datepicker>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div>
+                <mat-calendar [selected]="selectedDate" [matDatepickerFilter]="weekendsDatesFilter" (selectedChange)="selectedDate = $event"></mat-calendar>
+                </div>
+        </div>
+        <div class="col-2">
+            <div class="time">
+                <div class="day-month-year">
+                    <p>friday, feb 11</p>
+                </div>
+                <div class="hr" *ngFor="let time of availableTime">
+                    <button class="hr-btn">{{time}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
