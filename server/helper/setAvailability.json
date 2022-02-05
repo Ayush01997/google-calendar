@@ -1,0 +1,9 @@
+{
+    "availableHr": [
+        {
+        "startTime": "9:00",
+        "endime": "18:00"
+    }
+], 
+    "availableDays": ["monday","tuesday","wednesday","thursday"]
+}
