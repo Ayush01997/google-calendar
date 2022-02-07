@@ -6,10 +6,8 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarComponent } from './calendar/calendar.component';
-import { 
-  MatDatepickerModule,
-  MatNativeDateModule} from '@angular/material';
-
+import { MatNativeDateModule} from '@angular/material/core';
+import { MatDatepickerModule} from '@angular/material/datepicker';
 @NgModule({
   declarations: [
     AppComponent,

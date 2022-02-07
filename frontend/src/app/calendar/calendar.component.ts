@@ -55,11 +55,13 @@ export class CalendarComponent implements OnInit {
     console.log(this.times);
   }
 
-  weekendsDatesFilter = (d: Date): boolean => {
-    console.log(d)
-    const day = d.getDay();
-
-    /* Prevent Saturday and Sunday for select. */
-    return day !== 0 && day !== 6 ;
+myFilter = (d: Date | null): boolean => {
+  const day = (d || new Date()).getDay();
+  // Prevent Saturday and Sunday from being selected.
+  if(data.availableDays.includes(day)){
+    return true
+  }else{
+    return false
+  }
 }
 }
