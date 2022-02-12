@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -5,6 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class SharedService {
   private data:any = {};
+  constructor(private http: HttpClient) { }
 
   setData(data:any){
       this.data = data;
@@ -14,5 +16,8 @@ export class SharedService {
       return this.data;
   }
 
-  constructor() { }
+  setMyCalendar() {
+    let setupCalendarUrl = "http://localhost:3000/setupCalendar";
+    return this.http.post<any>(setupCalendarUrl, this.data)
+  }
 }

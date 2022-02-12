@@ -19,6 +19,11 @@ export class SetupEventComponent implements OnInit {
     //console.log(formData.value)
     console.log({...this.sharedData,...formData.value})
     this.shared.setData({...this.sharedData,...formData.value})
+    this.shared.setMyCalendar().subscribe((data)=> {
+      console.log(data)
+    }, (err) => {
+      console.log(err)
+    })
   }
 
 }
