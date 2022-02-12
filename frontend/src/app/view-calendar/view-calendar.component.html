@@ -1,1 +1,19 @@
-<p>view-calendar works!</p>
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div>
+                <mat-calendar [dateFilter]="myFilter" ></mat-calendar>
+                </div>
+        </div>
+        <div class="col-2">
+            <div class="time">
+                <div class="day-month-year">
+                    <p>friday, feb 11</p>
+                </div>
+                <div class="hr" *ngFor="let time of availableTime">
+                    <button class="hr-btn">{{time}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

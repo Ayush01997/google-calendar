@@ -1,0 +1,17 @@
+.time{
+    max-height: 600px;
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-bottom: 20px;
+}
+.hr {
+    margin-bottom: 10px;
+}
+.hr-btn {
+    width: 100%;
+    height: 52px;
+    background: white;
+    border-radius: 4px;
+    color: var(--primary-color, rgb(0, 105, 255));
+    border: 1px solid var(--primary-color-level2, rgba(0, 105, 255, 0.5));
+}
