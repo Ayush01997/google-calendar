@@ -10,13 +10,14 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { MatNativeDateModule} from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule} from '@angular/material/datepicker';
-import { SetAvailabilityComponent } from './set-availability/set-availability.component';
+import { SetAvailabilityComponent } from './calendar/set-availability/set-availability.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { SetupCalendarComponent } from './setup-calendar/setup-calendar.component';
 import { ValidateAuthComponent } from './validate-auth/validate-auth.component';
 import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
+import { SetupEventComponent } from './calendar/setup-event/setup-event.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,7 +25,8 @@ import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
     SetAvailabilityComponent,
     SetupCalendarComponent,
     ValidateAuthComponent,
-    ViewCalendarComponent
+    ViewCalendarComponent,
+    SetupEventComponent
   ],
   imports: [
     RouterModule,

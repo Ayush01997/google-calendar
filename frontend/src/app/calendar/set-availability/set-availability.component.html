@@ -1,6 +1,6 @@
 <div class="container">
   <div class="header">
-    <div class="row">
+    <div class="row w-50">
       <div class="set-availability">
         <h4>Set your availability</h4>
         <p>
@@ -9,7 +9,7 @@
       </div>
       <div class="available-hrs">
         <p>Available hours</p>
-        <div class="col-6 select-time">
+        <div class="col-12 pl-0 pr-0 select-time">
           <input
             [ngxTimepicker]="picker"
             [(ngModel)]="time"
@@ -25,6 +25,16 @@
           />
           <ngx-material-timepicker #picker2></ngx-material-timepicker>
         </div>
+      </div>
+      <div class="duration mt-4">
+        <label for="exampleFormControlSelect1">Duration</label>
+        <select class="form-control" id="exampleFormControlSelect1" [(ngModel)]="duration">
+          <option value="" selected>Select duration</option>
+          <option value="15">15 min</option>
+          <option value="30">30 min</option>
+          <option value="45">45 min</option>
+          <option value="60">60 min</option>
+        </select>
       </div>
       <div class="available-day">
         <p>Available Days</p>
