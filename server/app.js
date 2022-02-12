@@ -4,6 +4,7 @@ const fs = require("fs");
 const readline = require("readline");
 const { google } = require("googleapis");
 const app = express();
+const db = require("./config/db.connectiom")
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -21,6 +22,8 @@ const defaultScope = [
   "https://www.googleapis.com/auth/calendar.readonly",
   "https://www.googleapis.com/auth/calendar.events.readonly",
   "https://www.googleapis.com/auth/plus.login",
+  "email",
+  "profile"
 ];
 
 // accessToken variable
@@ -65,7 +68,7 @@ app.get("/auth/google/callback", async (req, res) => {
   auth.setCredentials(tokens);
   if (Object.keys(token).length > 0) {
     console.log("TERRRRRRRRRRRRRRRRRRRRAB")
-    res.redirect(`http://localhost:4200/validate-auth?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
+    res.redirect(`http://localhost:4200/validate-auth?id_token=${token.id_token}&refresh_token=${token.refresh_token}`);
   } else {
     res.status(400).send("issue");
   }
@@ -186,7 +189,22 @@ app.post("/createEvent", (req, res) => {
     console.log('Event created: %s', result);
     return res.send("Event Created");
   });
+}),
+
+app.post('/setupCalendar', (req, res)=>{
+  let body = req.body
+  // let sql = `INSERT INTO demo VALUES(${null},'john wick')`
+  let sql = `INSERT INTO user_calendar VALUES(${null},'${body.name}','${body.email}','${body.startTime}','${body.endTime}','${body.availableDays}','${body.duration}','${body.eventName}','${body.eventDescription}','${body.location}','${body.calendarLink}')`;
+  // let value = {body.name,body.email,body.startTime,body.endTime,bod,body.duration,body.eventName,body.eventDescription,body.calendarLink};
+  // console.log(value)
+  db.query(sql, (err, result) => {
+    if(err) {
+      console.log(err)
+      return res.status(400)
+    } return res.status(200).send(result)
+  })
 })
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
