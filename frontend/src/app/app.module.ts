@@ -17,7 +17,6 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { SetupCalendarComponent } from './setup-calendar/setup-calendar.component';
 import { ValidateAuthComponent } from './validate-auth/validate-auth.component';
 import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
-
 @NgModule({
   declarations: [
     AppComponent,

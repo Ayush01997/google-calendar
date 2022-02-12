@@ -134,24 +134,24 @@ app.post("/getUsersSchedule", async (req, res) => {
   
 });
 
-app.post("/createEvent", (req, res) => {
+app.post("/createEvent", (req, res) => {  
   var event = {
     'summary': 'Google I/O 2015',
     'location': '800 Howard St., San Francisco, CA 94103',
     'description': 'A chance to hear more about Google\'s developer products.',
     'start': {
-      'dateTime': '2022-02-05T09:00:00-07:00',
+      'dateTime': '2022-02-09T09:00:00-07:00',
       'timeZone': 'Asia/Kolkata',
     },
     'end': {
-      'dateTime': '2022-02-05T17:00:00-07:00',
+      'dateTime': '2022-02-09T17:00:00-07:00',
       'timeZone': 'Asia/Kolkata',
     },
     'recurrence': [
       'RRULE:FREQ=DAILY;COUNT=2'
     ],
     'attendees': [
-      {'email': 'akash9817@gmail.com'}
+      {'email': `${req.body.email}`}
     ],
     'reminders': {
       'useDefault': false,
@@ -176,13 +176,15 @@ app.post("/createEvent", (req, res) => {
     auth: auth,
     calendarId: 'primary',
     resource: event,
+    sendNotifications: true,
     conferenceDataVersion: 1
-  }, function(err, res) {
+  }, function(err, result) {
     if (err) {
       console.log('There was an error contacting the Calendar service: ' + err);
-      return;
+      return res.send(err);
     }
-    console.log('Event created: %s', res);
+    console.log('Event created: %s', result);
+    return res.send("Event Created");
   });
 })
 
