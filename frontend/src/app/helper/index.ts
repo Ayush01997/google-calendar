@@ -5,7 +5,7 @@ function parseTime(s) {
   
   function convertHours(mins){
     var hour = Math.floor(mins/60);
-    var mins = mins%60;
+    var mins : any = mins%60;
     var converted = pad(hour, 2)+':'+pad(mins, 2);
     return converted;
   }
@@ -15,7 +15,9 @@ function parseTime(s) {
     return str.length < max ? pad("0" + str, max) : str;
   }
   
-  function calculate_time_slot(start_time, end_time, interval = "30"){
+  export function calculate_time_slot(start_time, end_time, interval : any = "30"){
+      start_time = parseTime(start_time)
+      end_time = parseTime(end_time)
       var i, formatted_time;
     var time_slots = new Array();
       for(var i=start_time; i<=end_time; i = i+interval){
@@ -29,7 +31,7 @@ function parseTime(s) {
   function tConv24(time24) {
     var ts = time24;
     var H = +ts.substr(0, 2);
-    var h = (H % 12) || 12;
+    var h : any = (H % 12) || 12;
     h = (h < 10)?("0"+h):h;  // leading 0 at the left for 1 digit hours
     var ampm = H < 12 ? " AM" : " PM";
     ts = h + ts.substr(2, 3) + ampm;
@@ -40,6 +42,6 @@ function parseTime(s) {
           end_time = parseTime("19:15"),
       interval = 15;
   
-  var times_ara = calculate_time_slot( start_time, end_time, interval );
+  //var times_ara = calculate_time_slot( start_time, end_time, interval );
   
-  console.log(times_ara);
+  //times_ara

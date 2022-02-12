@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import data from "../../data.json";
+import {calculate_time_slot } from '../helper/index'
 
 @Component({
   selector: "app-calendar",
@@ -18,15 +19,17 @@ export class CalendarComponent implements OnInit {
 
   constructor() {
     console.log(data.availableHr.startTime);
-    this.generateTime();
-    let startIndex = this.times.findIndex(
-      (e) => e == data.availableHr.startTime
-    );
-    let endIndex = this.times.findIndex((e) => e == data.availableHr.endTime);
-    console.log(startIndex);
-    console.log(endIndex);
-    this.availableTime = this.times.slice(startIndex, endIndex + 1);
+    // this.generateTime();
+    // let startIndex = this.times.findIndex(
+    //   (e) => e == data.availableHr.startTime
+    // );
+    // let endIndex = this.times.findIndex((e) => e == data.availableHr.endTime);
+    // console.log(startIndex);
+    // console.log(endIndex);
+    // this.availableTime = this.times.slice(startIndex, endIndex + 1);
     //console.log(finalTime)
+    this.availableTime = calculate_time_slot('10:30','16:45', 15)
+    console.log(this.availableTime)
   }
 
   ngOnInit(): void {}
