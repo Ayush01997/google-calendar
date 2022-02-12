@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-
 import data from "../../data.json";
 
 @Component({
-  selector: "app-calendar",
-  templateUrl: "./calendar.component.html",
-  styleUrls: ["./calendar.component.css"],
+  selector: "app-view-calendar",
+  templateUrl: "./view-calendar.component.html",
+  styleUrls: ["./view-calendar.component.css"],
 })
-export class CalendarComponent implements OnInit {
+export class ViewCalendarComponent implements OnInit {
   selected: Date | null;
 
   availableTime = [];
@@ -35,10 +34,8 @@ export class CalendarComponent implements OnInit {
     const day = date.getDay();
 
     /* Prevent Saturday and Sunday for select. */
-    return day !== 0 && day !== 6 ;
-      
-  }
-  
+    return day !== 0 && day !== 6;
+  };
 
   generateTime() {
     //loop to increment the time and push results in array
@@ -65,10 +62,10 @@ export class CalendarComponent implements OnInit {
   }
 
   weekendsDatesFilter = (d: Date): boolean => {
-    console.log(d)
+    console.log(d);
     const day = d.getDay();
 
     /* Prevent Saturday and Sunday for select. */
-    return day !== 0 && day !== 6 ;
-}
+    return day !== 0 && day !== 6;
+  };
 }

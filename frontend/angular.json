@@ -123,5 +123,8 @@
       }
     }
   },
-  "defaultProject": "google-ui"
+  "defaultProject": "google-ui",
+  "cli": {
+    "analytics": "5a0e702f-8d7e-49b4-98d6-d83a066ea5f3"
+  }
 }

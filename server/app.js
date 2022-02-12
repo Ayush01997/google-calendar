@@ -9,6 +9,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyParser.json())
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 const port = 3000;
 
 const defaultScope = [
@@ -46,7 +51,7 @@ app.get("/authorization", async (req, res) => {
   const url = getConnectionUrl(auth);
   if (url) {
     res.send({
-      message: `redirect to this url ${url}`,
+      url
     });
   }
 });
@@ -59,7 +64,8 @@ app.get("/auth/google/callback", async (req, res) => {
   console.log(tokens)
   auth.setCredentials(tokens);
   if (Object.keys(token).length > 0) {
-    res.send("access token is set");
+    console.log("TERRRRRRRRRRRRRRRRRRRRAB")
+    res.redirect(`http://localhost:4200/validate-auth?access_token=${token.access_token}&refresh_token=${token.refresh_token}`);
   } else {
     res.status(400).send("issue");
   }

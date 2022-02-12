@@ -1,0 +1,117 @@
+<div class="container">
+  <div class="header">
+    <div class="row">
+      <div class="set-availability">
+        <h4>Set your availability</h4>
+        <p>
+          Let Leadangel know when you're typically available to accept meeting
+        </p>
+      </div>
+      <div class="available-hrs">
+        <p>Available hours</p>
+        <div class="col-6 select-time">
+          <input
+            [ngxTimepicker]="picker"
+            [(ngModel)]="time"
+            (ngModelChange)="selectFirstTime($event)"
+          />
+          <ngx-material-timepicker #picker></ngx-material-timepicker>
+
+          <input
+            [ngxTimepicker]="picker2"
+            [(ngModel)]="time2"
+            class="material-timepicker"
+            (ngModelChange)="selectSecondTime($event)"
+          />
+          <ngx-material-timepicker #picker2></ngx-material-timepicker>
+        </div>
+      </div>
+      <div class="available-day">
+        <p>Available Days</p>
+        <form #availableDays="ngForm" (ngSubmit)="onSubmit(availableDays)">
+            <div class="form-group">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="inlineCheckbox1">sun</label>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="sunday"
+                      ngModel
+                      id="inlineCheckbox1"
+                      value="option1"
+                    />
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="monday"
+                      ngModel
+                      id="inlineCheckbox2"
+                      value="option2"
+                    />
+                    <label class="form-check-label" for="inlineCheckbox2">mon</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="tuesday"
+                      ngModel
+                      id="inlineCheckbox2"
+                      value="option2"
+                    />
+                    <label class="form-check-label" for="inlineCheckbox2">tue</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="wednesday"
+                      ngModel
+                      id="inlineCheckbox2"
+                      value="option2"
+                    />
+                    <label class="form-check-label" for="inlineCheckbox2">wed</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="thursday"
+                      ngModel
+                      id="inlineCheckbox2"
+                      value="option2"
+                    />
+                    <label class="form-check-label" for="inlineCheckbox2">thr</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="friday"
+                      ngModel
+                      id="inlineCheckbox2"
+                      value="option2"
+                    />
+                    <label class="form-check-label" for="inlineCheckbox2">fri</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="saturday"
+                      ngModel
+                      id="inlineCheckbox2"
+                      value="option2"
+                    />
+                    <label class="form-check-label" for="inlineCheckbox2">sat</label>
+                  </div>    
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
