@@ -18,7 +18,8 @@ export class ValidateAuthComponent implements OnInit {
     this.http.post<any>(`https://oauth2.googleapis.com/tokeninfo?id_token=${id_token}`,{}).subscribe((res)=>{
       console.log(res)
       if(res.email){
-        this.shared.setData({"name" : res.name , "email" : res.email })
+        let data = {"name" : res.name , "email" : res.email }
+        localStorage.setItem("userDetail", JSON.stringify(data))
         this.router.navigate(['setAvailability'])
       }else{
         this.router.navigate([''])

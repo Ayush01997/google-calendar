@@ -193,6 +193,7 @@ app.post("/createEvent", (req, res) => {
 
 app.post('/setupCalendar', (req, res)=>{
   let body = req.body
+  console.log(body)
   // let sql = `INSERT INTO demo VALUES(${null},'john wick')`
   let sql = `INSERT INTO user_calendar VALUES(${null},'${body.name}','${body.email}','${body.startTime}','${body.endTime}','${body.availableDays}','${body.duration}','${body.eventName}','${body.eventDescription}','${body.location}','${body.calendarLink}')`;
   // let value = {body.name,body.email,body.startTime,body.endTime,bod,body.duration,body.eventName,body.eventDescription,body.calendarLink};
@@ -202,6 +203,21 @@ app.post('/setupCalendar', (req, res)=>{
       console.log(err)
       return res.status(400)
     } return res.status(200).send(result)
+  })
+})
+
+app.post('/getCalendar/:id', (req, res)=>{
+  let body = req.body
+  // let sql = `INSERT INTO demo VALUES(${null},'john wick')`
+  let id = req.params.id
+  let sql = `SELECT * FROM user_calendar WHERE id = ${id}`;
+  // let value = {body.name,body.email,body.startTime,body.endTime,bod,body.duration,body.eventName,body.eventDescription,body.calendarLink};
+  // console.log(value)
+  db.query(sql, (err, result) => {
+    if(err) {
+      console.log(err)
+      return res.status(400)
+    } return res.status(200).send(result[0])
   })
 })
 

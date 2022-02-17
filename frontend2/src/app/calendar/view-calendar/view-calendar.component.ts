@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { SharedService } from "../common/shared.service";
-import {calculate_time_slot } from '../helper/index'
+  import { SharedService } from "../../common/shared.service";
+  import {calculate_time_slot } from '../../helper/index'
 
 @Component({
   selector: "app-view-calendar",
@@ -9,7 +9,8 @@ import {calculate_time_slot } from '../helper/index'
 })
 export class ViewCalendarComponent implements OnInit {
   calendarData : any = {}
-  availableTime = [];
+  availableTime:any = [];
+  selected: Date | null;
   isDataLoaded : boolean = false;
 
   constructor(private shared : SharedService) {}
@@ -23,6 +24,10 @@ export class ViewCalendarComponent implements OnInit {
 
     /* Prevent Saturday and Sunday for select. */
     return day !== 0 && day !== 6 
+  }
+
+  onDateSelect() {
+    console.log(this.selected)
   }
 
   getCalendar(){

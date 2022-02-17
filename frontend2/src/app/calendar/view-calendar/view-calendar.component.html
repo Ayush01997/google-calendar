@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row">
+    <div class="col-6">
+      <div>
+        <div *ngIf="isDataLoaded">
+          <mat-calendar
+            [dateFilter]="myFilter"
+            [(selected)]="selected"
+            (click)="onDateSelect()"
+          ></mat-calendar>
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+      <div class="time">
+        <div class="day-month-year">
+          <p>friday, feb 11</p>
+        </div>
+        <div class="hr" *ngFor="let time of availableTime">
+          <button class="hr-btn">{{ time }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

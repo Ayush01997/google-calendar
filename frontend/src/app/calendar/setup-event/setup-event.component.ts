@@ -18,7 +18,9 @@ export class SetupEventComponent implements OnInit {
   onSubmit(formData) {
     //console.log(formData.value)
     console.log({...this.sharedData,...formData.value})
-    this.shared.setData({...this.sharedData,...formData.value})
+    let storageData = localStorage.getItem('userDetail')?JSON.parse(localStorage.getItem('userDetail')):null
+    console.log(storageData)
+    this.shared.setData({...this.sharedData,...formData.value,...storageData})
     this.shared.setMyCalendar().subscribe((data)=> {
       console.log(data)
     }, (err) => {

@@ -15,8 +15,9 @@ const routes: Routes = [
   {path: "validate-auth", component: ValidateAuthComponent},
   {path : '', component : CalendarComponent, children : [
     {path : 'setAvailability', component : SetAvailabilityComponent},
-    {path : 'setup-event', component : SetupEventComponent},
-  ]}
+    {path : 'setup-event', component : SetupEventComponent}
+  ]},
+  
 ]
 
 @NgModule({
