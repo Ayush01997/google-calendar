@@ -17,13 +17,14 @@ export class SharedService {
       return this.data;
   }
 
-  setMyCalendar() {
-    let setupCalendarUrl = "http://localhost:3000/setupCalendar";
-    return this.http.post<any>(setupCalendarUrl, this.data)
-  }
 
   getMyCalendar(id:any){
     let getCalendarUrl = `http://localhost:3000/getCalendar/${id}`;
     return this.http.post<any>(getCalendarUrl, {});
+  }
+
+  createEvent(data) {
+    let getCalendarUrl = `http://localhost:3000/createEvent`;
+    return this.http.post<any>(getCalendarUrl, data);
   }
 }

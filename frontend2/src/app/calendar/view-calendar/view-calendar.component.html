@@ -17,7 +17,7 @@
           <p>friday, feb 11</p>
         </div>
         <div class="hr" *ngFor="let time of availableTime">
-          <button class="hr-btn">{{ time }}</button>
+          <button class="hr-btn" (click)="onTimeSelect(time)">{{ time }}</button>
         </div>
       </div>
     </div>
