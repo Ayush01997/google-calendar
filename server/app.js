@@ -31,7 +31,7 @@ const defaultScope = [
 ];
 
 // accessToken variable
-var token = {};
+var tokenData = {};
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -113,11 +113,11 @@ app.get("/auth/google/callback", async (req, res) => {
   let authCode = req.query.code;
   const { tokens } = await auth.getToken(authCode);
   console.log("code", authCode);
-  token = tokens;
+  tokenData = tokens;
   console.log(tokens);
-  let email = await getEmailFromIdToken(token.id_token);
+  let email = await getEmailFromIdToken(tokenData.id_token);
   let sql = `INSERT INTO user_auth VALUES(${null},'${email}','${
-    token.refresh_token
+    tokenData.refresh_token
   }')`;
   db.query(sql, (err, result) => {
     if (err) {
@@ -127,9 +127,9 @@ app.get("/auth/google/callback", async (req, res) => {
     }
   });
   auth.setCredentials(tokens);
-  if (Object.keys(token).length > 0) {
+  if (Object.keys(tokenData).length > 0) {
     res.redirect(
-      `http://localhost:4200/validate-auth?id_token=${token.id_token}&refresh_token=${token.refresh_token}`
+      `http://localhost:4200/validate-auth?id_token=${tokenData.id_token}&refresh_token=${tokenData.refresh_token}`
     );
   } else {
     res.status(400).send("issue");
@@ -167,10 +167,11 @@ app.get("/getEvents/:id", async (req, res) => {
 });
 
 app.post("/getUsersSchedule", async (req, res) => {
-  auth.setCredentials(mainToken);
+  // auth.setCredentials(mainToken);
+  console.log("hetUSERSCHEDULE",tokenData)
   auth.credentials = {
-    access_token: token.access_token,
-    refresh_token: token.refresh_token,
+    access_token: tokenData.access_token,
+    refresh_token: tokenData.refresh_token,
   };
   try {
     console.log(req.body);
@@ -221,8 +222,8 @@ app.post("/createEvent", (req, res) => {
     {
       auth: auth,
       calendarId: "primary",
+      sendUpdates: "all",
       resource: event,
-      sendNotifications: true,
       conferenceDataVersion: 1,
     },
     function (err, result) {
@@ -273,8 +274,68 @@ app.post("/getCalendar/:id", (req, res) => {
       console.log(err);
       return res.status(400);
     }
-    return res.status(200).send(result[0]);
+    console.log("EMIAL" ,result[0].email)
+    let sql = `SELECT refresh_token FROM user_auth WHERE email = '${result[0].email}'`;
+    db.query(sql, async (err ,result2) => {
+      if(err){
+        console.log(err);
+        return res.status(400).send(err);
+      }
+      try {
+        let token = await axios.post(
+          "https://www.googleapis.com/oauth2/v4/token",
+          {
+            client_id:
+              "567130593726-cgsmtpsmh4jbi6dvhhvdp1rfv1u99vrj.apps.googleusercontent.com",
+            client_secret: "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",
+            refresh_token: result2[0].refresh_token,
+            grant_type: "refresh_token",
+          }
+        );
+        // console.log("TOOEEEEEEEEEEEEEN", token.data)
+        auth.credentials = {
+          access_token: token.data.access_token,
+          refresh_token: result2[0].refresh_token,
+        };
+        tokenData = {
+          access_token: token.data.access_token,
+          refresh_token: result2[0].refresh_token
+        }
+        return res.status(200).send({...result[0],...result2[0],access_token : token.data.access_token}); 
+        }catch(err){
+          console.log(err);
+          return res.status(400).send(err);
+        } 
+    })
+    //return res.status(200).send(result[0]);
   });
+});
+
+app.post("/getValidToken", async (req, res) => {
+  try {
+    let token = await axios.post(
+      "https://www.googleapis.com/oauth2/v4/token",
+      {
+        client_id:
+          "567130593726-cgsmtpsmh4jbi6dvhhvdp1rfv1u99vrj.apps.googleusercontent.com",
+        client_secret: "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",
+        refresh_token: req.body.refresh_token,
+        grant_type: "refresh_token",
+      }
+    );
+    auth.credentials = {
+      access_token: token.data.access_token,
+      refresh_token: req.body.refresh_token,
+    };
+    tokenData = {
+      access_token: token.data.access_token,
+      refresh_token: req.body.refresh_token
+    }
+    return res.status(200).send("access token set"); 
+    }catch(err){
+      console.log(err);
+      return res.status(400).send(err);
+    } 
 });
 
 app.listen(port, () => {

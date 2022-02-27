@@ -12,6 +12,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule }   from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
+import { EventDialogComponent } from './calendar/event-dialog/event-dialog.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { DatePipe } from '@angular/common';
     AppComponent,
     ViewCalendarComponent,
     CreateEventComponent,
-    DialogContentExampleDialog
+    DialogContentExampleDialog,
+    EventDialogComponent
   ],
   imports: [
     BrowserModule,

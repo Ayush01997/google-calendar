@@ -32,7 +32,7 @@ export class ValidateAuthComponent implements OnInit {
    }else{
     const id_token = this.route.snapshot.queryParamMap.get('id_token');
     console.log(id_token)
-    this.http.post<any>(`https://oauth2.googleapis.com/userinfo?id_token=${id_token}`,{}).subscribe((res)=>{
+    this.http.post<any>(`https://oauth2.googleapis.com/tokeninfo?id_token=${id_token}`,{}).subscribe((res)=>{
       console.log(res)
       if(res.email){
         let data = {"name" : res.name , "email" : res.email }

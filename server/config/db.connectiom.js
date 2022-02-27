@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
   port: 3306, // default port for mysql is 3306
   database: "calendar", // database from which we want to connect out node application
   user: "root", // username of the mysql connection
-  password: "mypassword", // password of the mysql connection
+  password: "root", // password of the mysql connection
 });
 
 connection.connect(function (err) {

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../../common/shared.service';
-import { calculate_time_slot } from '../../helper/index';
+import { calculate_time_slot, formatAMPM } from '../../helper/index';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 
 @Component({
@@ -39,7 +40,31 @@ export class ViewCalendarComponent implements OnInit {
   };
 
   onDateSelect() {
-    console.log(this.selected);
+    //console.log(this.selected);
+    let timeMin = moment(this.selected).startOf('day').format('YYYY-MM-DD[T]HH:mm:ssZ')
+    let timeMax = moment(this.selected).endOf('day').format('YYYY-MM-DD[T]HH:mm:ssZ')
+    let y = formatAMPM(new Date("2022-02-25T04:00:00Z"))
+    console.log(y)
+    let body = {
+      "id" : "akash9817@gmail.com",
+      "timeMin" : timeMin,
+      "timeMax" : timeMax
+    }
+    console.log(body)
+    this.shared.getUsersSchedule(body).subscribe((res) => {
+      console.log()
+      let slots = res[body["id"]].busy
+      let array : any = []
+      slots.forEach(ele => {
+        array.push(formatAMPM(new Date(ele.start)))
+      });
+      //console.log(this.availableTime)
+      //console.log(array)
+      this.availableTime = this.availableTime.filter(val => !array.includes(val));
+      console.log(this.availableTime)
+    },(err) => {
+      console.log(err)
+    })
   }
   onTimeSelect(time) {
     console.log(time);
@@ -53,30 +78,61 @@ export class ViewCalendarComponent implements OnInit {
   }
 
   getCalendar() {
-    this.shared.getMyCalendar(8).subscribe((res) => {
+    
+    this.shared.getMyCalendar(1).subscribe((res) => {
       console.log(res);
       this.calendarData = res;
+      this.shared.setData(res)
       this.isDataLoaded = true;
+      const expirationDate = this.newExpirationDate();
+      if (res.access_token && res.refresh_token) {
+        this.storeTokenData(res.access_token, res.refresh_token, expirationDate);
+      }
       this.duration = res.duration;
       this.availableTime = calculate_time_slot(
         res.startTime,
         res.endTime,
         parseInt(res.duration)
       );
+    },(err) => {
+      console.log(err)
     });
   }
 
-  myFilter = (d: Date | null): boolean => {
+  newExpirationDate(){
+    var expiration = new Date();
+    expiration.setHours(expiration.getHours() + 1);
+    return expiration;
+  };
+
+  storeTokenData(token, refreshToken, expirationDate){
+    sessionStorage.setItem("accessToken", token);
+    sessionStorage.setItem("refreshToken", refreshToken);
+    sessionStorage.setItem("expirationDate", expirationDate);
+  };
+
+  myFilter = (d: Date): boolean => {
+    //console.log(d)
+    let today = new Date()
+    if(d >= new Date()){
+      console.log("sssssssssssssss")
+      return true
+    }
+    if(d < today){
+      return false
+    }
+    
     const day = (d || new Date()).getDay();
     //console.log(day);
     // Prevent Saturday and Sunday from being selected.
     let days = this.calendarData.availableDays.split(',').map(Number);
-    console.log(days);
-    if (days.includes(day)) {
-      return true;
-    } else {
-      return false;
-    }
+    // console.log(days);
+    return true
+    // if (days.includes(day)) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
   };
 }
 
