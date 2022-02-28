@@ -19,6 +19,8 @@ import { ValidateAuthComponent } from './validate-auth/validate-auth.component';
 import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
 import { SetupEventComponent } from './calendar/setup-event/setup-event.component';
 import { EventDialogComponent } from './calendar/event-dialog/event-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +45,8 @@ import { EventDialogComponent } from './calendar/event-dialog/event-dialog.compo
     BrowserAnimationsModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    AppRoutingModule     
+    AppRoutingModule,
+    MatDialogModule     
   ],
   providers: [],
   bootstrap: [AppComponent]
