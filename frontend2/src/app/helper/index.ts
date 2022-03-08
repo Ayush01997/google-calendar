@@ -18,15 +18,30 @@ function parseTime(s) {
   export function calculate_time_slot(start_time, end_time, interval : any = "30"){
       start_time = parseTime(convertTime(start_time))
       end_time = parseTime(convertTime(end_time))
+      console.log(start_time)
       var i, formatted_time;
     var time_slots = new Array();
       for(var i=start_time; i<=end_time; i = i+interval){
         formatted_time = convertHours(i);
-      
+      console.log(formatted_time)
       time_slots.push(tConv24(formatted_time));
     }
     return time_slots;
   }
+
+
+  export function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;  // the hour '0' should be '12'
+    hours = hours < 10 ? '0'+hours : hours;
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+  
   
   function tConv24(time24) {
     var ts = time24;

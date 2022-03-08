@@ -3,6 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
 import { SharedService } from 'src/app/common/shared.service';
+import { MatDialog } from '@angular/material/dialog';
+import { EventDialogComponent } from '../event-dialog/event-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-event',
@@ -16,7 +19,7 @@ export class CreateEventComponent implements OnInit {
   eventStartDateTime;
   eventEndDateTime;
 
-  constructor(private route: ActivatedRoute, private datePipe: DatePipe, private shared : SharedService) { }
+  constructor(private route: ActivatedRoute, public dialog: MatDialog, private shared : SharedService, private router: Router) { }
 
   ngOnInit(): void {
     this.getEventTime()
@@ -24,7 +27,7 @@ export class CreateEventComponent implements OnInit {
 
 
   onSubmit(setupEvent) {
-    console.log()
+   
     let body = {
       'summary' : setupEvent.value.eventName,
       'description': setupEvent.value.eventDescription, 
@@ -40,9 +43,46 @@ export class CreateEventComponent implements OnInit {
         {'email': setupEvent.value.email}
       ],
     }
+    console.log(this.shared.getData())
+    
     this.shared.createEvent(body).subscribe(res => {
       console.log(res)
+      this.createDialog({...body, location : setupEvent.value.location})  
+    },(err) => {
+      console.log(err)
     })
+  }
+
+  createDialog(data){
+    let startTime = moment(data.start.dateTime).format("hh:mm a")
+    let endTime = moment(data.end.dateTime).format("hh:mm a")
+    let day = moment(data.end.dateTime).format("dddd, MMMM Do YYYY")
+    console.log(startTime, endTime ,day)
+    let sharedData = this.shared.getData()
+    let body = {
+      summary : data.summary,
+      description : data.description,
+      name : sharedData.name,
+      location : data.location,
+      time : `${startTime} - ${endTime} ${day}`
+    }
+    this.openDialog(body)
+  }
+
+  openDialog(data : any) {
+    const dialogRef = this.dialog.open(EventDialogComponent,{
+      width      : '100%',
+      maxWidth   : '600px',
+      height     : 'auto',
+      hasBackdrop: true,
+      maxHeight  : '700px',
+      panelClass : 'app-event-dialog',
+      data : data
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.router.navigate(["/viewCalendar"])
+    });
   }
 
   getEventTime() {
@@ -61,3 +101,9 @@ export class CreateEventComponent implements OnInit {
   }
 
 }
+
+// @Component({
+//   selector: 'event-dialog',
+//   templateUrl: '../event-dialog.html',
+// })
+// export class EventDialog {}

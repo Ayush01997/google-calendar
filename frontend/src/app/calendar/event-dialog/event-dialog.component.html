@@ -1,0 +1,42 @@
+<h2 class="text-center" mat-dialog-title>Calendar</h2>
+<div mat-dialog-content>
+  <div class="row mb-3">
+    <label class="col-3">Email</label>
+    <div class="col-9">
+      {{ result.email }}
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label class="col-3">Event Name</label>
+    <div class="col-9">
+      {{ result.eventName }}
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label class="col-3">Event Description</label>
+    <div class="col-9">
+      {{ result.eventDescription }}
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label class="col-3">Duration</label>
+    <div class="col-9">
+      {{ result.duration }}
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label class="col-3">Available Time</label>
+    <div class="col-9">
+      {{ result.availableTime }}
+    </div>
+  </div>
+  <div class="row mb-3">
+    <label class="col-3">Available Days</label>
+    <div class="col-9">
+      {{ result.availableDays }}
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Close</button>
+</div>

@@ -18,6 +18,9 @@ import { SetupCalendarComponent } from './setup-calendar/setup-calendar.componen
 import { ValidateAuthComponent } from './validate-auth/validate-auth.component';
 import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
 import { SetupEventComponent } from './calendar/setup-event/setup-event.component';
+import { EventDialogComponent } from './calendar/event-dialog/event-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +29,8 @@ import { SetupEventComponent } from './calendar/setup-event/setup-event.componen
     SetupCalendarComponent,
     ValidateAuthComponent,
     ViewCalendarComponent,
-    SetupEventComponent
+    SetupEventComponent,
+    EventDialogComponent
   ],
   imports: [
     RouterModule,
@@ -41,7 +45,8 @@ import { SetupEventComponent } from './calendar/setup-event/setup-event.componen
     BrowserAnimationsModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    AppRoutingModule     
+    AppRoutingModule,
+    MatDialogModule     
   ],
   providers: [],
   bootstrap: [AppComponent]
