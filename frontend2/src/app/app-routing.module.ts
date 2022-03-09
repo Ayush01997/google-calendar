@@ -4,7 +4,7 @@ import { CreateEventComponent } from './calendar/create-event/create-event.compo
 import { ViewCalendarComponent } from './calendar/view-calendar/view-calendar.component';
 
 const routes: Routes = [
-  {path: "viewCalendar", component: ViewCalendarComponent},
+  {path: "viewCalendar/:email", component: ViewCalendarComponent},
   {path : 'createEvent', component: CreateEventComponent}
 ];
 

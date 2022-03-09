@@ -262,11 +262,11 @@ app.post("/createEvent", (req, res) => {
     });
   });
 
-app.post("/getCalendar/:id", (req, res) => {
+app.post("/getCalendar/:email", (req, res) => {
   let body = req.body;
   // let sql = `INSERT INTO demo VALUES(${null},'john wick')`
-  let id = req.params.id;
-  let sql = `SELECT * FROM user_calendar WHERE id = ${id}`;
+  let email = req.params.email;
+  let sql = `SELECT * FROM user_calendar WHERE email = '${email}'`;
   // let value = {body.name,body.email,body.startTime,body.endTime,bod,body.duration,body.eventName,body.eventDescription,body.calendarLink};
   // console.log(value)
   db.query(sql, (err, result) => {
@@ -274,7 +274,13 @@ app.post("/getCalendar/:id", (req, res) => {
       console.log(err);
       return res.status(400);
     }
-    console.log("EMIAL" ,result[0].email)
+    if(result[0]===undefined) {
+      return res.status(200).send({
+        status: false,
+        message: 'No record found with specific email id',
+        data: []
+      })
+    }
     let sql = `SELECT refresh_token FROM user_auth WHERE email = '${result[0].email}'`;
     db.query(sql, async (err ,result2) => {
       if(err){
@@ -301,7 +307,7 @@ app.post("/getCalendar/:id", (req, res) => {
           access_token: token.data.access_token,
           refresh_token: result2[0].refresh_token
         }
-        return res.status(200).send({...result[0],...result2[0],access_token : token.data.access_token}); 
+        return res.status(200).send({data : {...result[0],...result2[0],access_token : token.data.access_token}, status: true}); 
         }catch(err){
           console.log(err);
           return res.status(400).send(err);

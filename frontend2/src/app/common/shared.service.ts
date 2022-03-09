@@ -18,8 +18,8 @@ export class SharedService {
   }
 
 
-  getMyCalendar(id:any){
-    let getCalendarUrl = `http://localhost:3000/getCalendar/${id}`;
+  getMyCalendar(email:any){
+    let getCalendarUrl = `http://localhost:3000/getCalendar/${email}`;
     return this.http.post<any>(getCalendarUrl, {});
   }
 

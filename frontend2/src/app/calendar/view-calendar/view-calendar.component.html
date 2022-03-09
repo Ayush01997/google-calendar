@@ -1,4 +1,8 @@
 <div class="container">
+  <div *ngIf="error.length > 0;else calendar">
+    {{error}}
+  </div>
+  <ng-template #calendar>
   <div class="row">
     <div class="col-6">
       <div>
@@ -22,4 +26,5 @@
       </div>
     </div>
   </div>
+</ng-template>
 </div>
