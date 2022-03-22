@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 export class CreateEventComponent implements OnInit {
   date;
   duration;
+  location:any;
   eventStartDateTime;
   eventEndDateTime;
 
@@ -92,7 +93,7 @@ export class CreateEventComponent implements OnInit {
   getEventTime() {
     let time = this.route.snapshot.paramMap.get('time');
     let date: any = this.route.snapshot.paramMap.get('date');
-    console.log('date', date);
+    this.location = this.route.snapshot.paramMap.get('location');
     this.duration = this.route.snapshot.paramMap.get('duration');
     let dateRes = moment(date).format('YYYY-MM-DD');
     console.log('dateres', dateRes);

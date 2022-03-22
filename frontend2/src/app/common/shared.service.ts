@@ -20,7 +20,7 @@ export class SharedService {
 
   getMyCalendar(email:any){
     let getCalendarUrl = `http://localhost:3000/getCalendar/${email}`;
-    return this.http.post<any>(getCalendarUrl, {});
+    return this.http.get<any>(getCalendarUrl);
   }
 
   createEvent(data) {

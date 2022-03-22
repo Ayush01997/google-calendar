@@ -60,7 +60,7 @@ export class SetupEventComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log("wwww");
-      this.router.navigate(["/setAvailability"]);
+      this.router.navigate(["dashboard"]);
     });
   }
 }

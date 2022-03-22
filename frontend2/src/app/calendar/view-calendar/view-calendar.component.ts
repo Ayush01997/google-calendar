@@ -91,7 +91,7 @@ export class ViewCalendarComponent implements OnInit {
       if (result) {
         this.router.navigate([
           '/createEvent',
-          { time: time, date: this.selected, duration: this.duration },
+          { time: time, date: this.selected, duration: this.duration, location: this.calendarData.location },
         ]);
       }
     });
@@ -102,8 +102,9 @@ export class ViewCalendarComponent implements OnInit {
       (res) => {
         console.log(res);
         if(res.status){
-        let data = res.data
+        let data = res.data[0]
         this.calendarData = data
+        console.log("calendat data: ", this.calendarData)
         this.shared.setData(data);
         localStorage.setItem('calendarId', this.email)
         this.isDataLoaded = true;

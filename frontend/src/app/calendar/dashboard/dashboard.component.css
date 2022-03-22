@@ -1,0 +1,10 @@
+.dashboard {
+    display: flex;
+    justify-content:center;
+}
+
+.header {
+    margin-bottom: 4rem;
+    padding: 10px;
+    box-shadow: 1px 1px #0000001a;
+}

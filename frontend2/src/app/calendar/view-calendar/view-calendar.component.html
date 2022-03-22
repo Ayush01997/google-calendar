@@ -1,30 +1,47 @@
 <div class="container">
-  <div *ngIf="error.length > 0;else calendar">
-    {{error}}
-  </div>
-  <ng-template #calendar>
   <div class="row">
-    <div class="col-6">
-      <div>
-        <div *ngIf="isDataLoaded">
-          <mat-calendar
-            [dateFilter]="myFilter"
-            [(selected)]="selected"
-            (click)="onDateSelect()"
-          ></mat-calendar>
-        </div>
-      </div>
-    </div>
     <div class="col-2">
-      <div class="time">
-        <div class="day-month-year">
-          <p>friday, feb 11</p>
+      <div class="calendar-details">
+        <div class="user-name">
+          <h3>{{calendarData.name}}</h3>
         </div>
-        <div class="hr" *ngFor="let time of availableTime">
-          <button class="hr-btn" (click)="onTimeSelect(time)">{{ time }}</button>
+        <div class="title">
+          <p>{{calendarData.eventName}}</p>
+        </div>
+        <div class="duration">
+          <p>{{calendarData.duration}} min</p>
+        </div>
+      </div>  
+    </div>
+    <div class="col-10">
+      <div *ngIf="error.length > 0;else calendar">
+        {{error}}
+      </div>
+      <ng-template #calendar>
+      <div class="row">
+        <div class="col-6">
+          <div>
+            <div *ngIf="isDataLoaded">
+              <mat-calendar
+                [dateFilter]="myFilter"
+                [(selected)]="selected"
+                (click)="onDateSelect()"
+              ></mat-calendar>
+            </div>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="time">
+            <div class="day-month-year">
+              <p>friday, feb 11</p>
+            </div>
+            <div class="hr" *ngFor="let time of availableTime">
+              <button class="hr-btn" (click)="onTimeSelect(time)">{{ time }}</button>
+            </div>
+          </div>
         </div>
       </div>
+    </ng-template>
     </div>
   </div>
-</ng-template>
 </div>

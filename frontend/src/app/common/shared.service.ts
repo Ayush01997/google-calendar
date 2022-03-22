@@ -23,8 +23,17 @@ export class SharedService {
   }
 
   getMyCalendar(id){
-    
     let getCalendarUrl = `http://localhost:3000/getCalendar/${id}`;
-    return this.http.post<any>(getCalendarUrl, {});
+    return this.http.get<any>(getCalendarUrl);
+  }
+
+  updateEvent(data) {
+    let updateEvent = `http://localhost:3000/editCalendar`;
+    return this.http.post<any>(updateEvent, data);
+  }
+
+  deleteEvent(id:number) {
+    let deleteEvent = `http://localhost:3000/deleteCalendar/${id}`;
+    return this.http.delete<any>(deleteEvent);
   }
 }

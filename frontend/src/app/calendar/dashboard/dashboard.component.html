@@ -1,0 +1,35 @@
+<div class="header">
+  <h2>{{ userName }}</h2>
+</div>
+
+<div class="container">
+    <button 
+    class="btn btn-primary float-right" 
+    type="button"
+    [disabled]="userCalendar.length >= 3"
+    (click)="onCreateEvent()">Create Event</button>
+  <div class="row">
+    <div class="dashboard" *ngIf="userCalendar?.length > 0">
+      <div class="card" style="width: 18rem" *ngFor="let data of userCalendar; let i = index">
+        <div class="card-body">
+          <h5 class="card-title">{{ data.eventName }}</h5>
+          <p class="card-text">{{ data.eventDescription }}</p>
+
+          <p class="card-text">
+            Duration: {{ data.startTime }} - {{ data.endTime }}
+          </p>
+          <button
+          (click)="onEdit(data)" 
+          class="btn btn-primary"
+          >edit</button>
+          <button 
+          class="btn btn-danger"
+          (click)="onDelete(data.id, i)">delete</button>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard" *ngIf="userCalendar?.length == 0">
+      <p>Please create an event</p>
+    </div>
+  </div>
+</div>

@@ -19,7 +19,13 @@ import { ValidateAuthComponent } from './validate-auth/validate-auth.component';
 import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
 import { SetupEventComponent } from './calendar/setup-event/setup-event.component';
 import { EventDialogComponent } from './calendar/event-dialog/event-dialog.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import { DashboardComponent } from './calendar/dashboard/dashboard.component';
+import { EditEventComponent } from './calendar/dashboard/edit-event/edit-event.component';
+import { ReactiveFormsModule } from '@angular/forms';
+
+// material
+import {MatDialogModule} from '@angular/material/dialog';
+
 
 @NgModule({
   declarations: [
@@ -30,13 +36,16 @@ import { MatDialogModule } from '@angular/material/dialog';
     ValidateAuthComponent,
     ViewCalendarComponent,
     SetupEventComponent,
-    EventDialogComponent
+    EventDialogComponent,
+    DashboardComponent,
+    EditEventComponent
   ],
   imports: [
     RouterModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    ReactiveFormsModule,
     NgxMaterialTimepickerModule,
     CalendarModule.forRoot({
       provide: DateAdapter,

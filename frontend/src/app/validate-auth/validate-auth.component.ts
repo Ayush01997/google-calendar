@@ -22,7 +22,7 @@ export class ValidateAuthComponent implements OnInit {
       if(res.email){
         let data = {"name" : res.name , "email" : res.email }
         localStorage.setItem("userDetail", JSON.stringify(data))
-        this.router.navigate(['setAvailability'])
+        this.router.navigate(['dashboard'])
       }else{
         this.router.navigate([''])
       }

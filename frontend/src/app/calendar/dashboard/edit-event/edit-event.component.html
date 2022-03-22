@@ -1,0 +1,84 @@
+<div class="container">
+  <form [formGroup]="eventFrom" (ngSubmit)="onEditForm()">
+    <div class="form-group row">
+      <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+      <div class="col-sm-10">
+        <p>{{ eventDetails?.email }}</p>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="staticEmail" class="col-sm-2 col-form-label"
+        >Event Name</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          id="exampleInputEmail1"
+          name="eventName"
+          formControlName="eventName"
+          aria-describedby="emailHelp"
+        />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="staticEmail" class="col-sm-2 col-form-label"
+        >Event Description</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          id="exampleInputEmail1"
+          name="eventDescription"
+          formControlName="eventDescription"
+          aria-describedby="emailHelp"
+        />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="staticEmail" class="col-sm-2 col-form-label">duration</label>
+      <div class="col-sm-10">
+        <select
+          class="form-control"
+          name="duration"
+          formControlName="duration"
+          id="exampleFormControlSelect1"
+        >
+          <option value="" selected></option>
+          <option value="15">15 min</option>
+          <option value="30">30 min</option>
+          <option value="45">45 min</option>
+          <option value="60">60 min</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="staticEmail" class="col-sm-2 col-form-label"
+        >start time</label
+      >
+      <div class="col-sm-10">
+        <input
+          [ngxTimepicker]="picker"
+          name="startTime"
+          formControlName="startTime"
+        />
+        <ngx-material-timepicker #picker></ngx-material-timepicker>
+      </div>
+    </div>
+    <div class="form-group row">
+        <label for="staticEmail" class="col-sm-2 col-form-label"
+          >end time</label
+        >
+        <div class="col-sm-10">
+          <input
+            [ngxTimepicker]="picker2"
+            name="endTime"
+            formControlName="endTime"
+          />
+          <ngx-material-timepicker #picker2></ngx-material-timepicker>
+        </div>
+      </div>
+    <button type="submit" class="btn btn-primary">Apply</button>
+  </form>
+</div>

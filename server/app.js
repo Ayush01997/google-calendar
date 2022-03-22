@@ -9,6 +9,8 @@ const axios = require("axios");
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const Zoomauth = require("./auth/auth");
+
 // parse application/json
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
@@ -17,6 +19,7 @@ app.use(function (req, res, next) {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
   next();
 });
 const port = 3000;
@@ -74,19 +77,20 @@ app.get("/authorization/:email", async (req, res) => {
               client_id:
                 "567130593726-cgsmtpsmh4jbi6dvhhvdp1rfv1u99vrj.apps.googleusercontent.com",
               client_secret: "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",
-              refresh_token: '1//0gHq0bHxNdgcbCgYIARAAGBASNwF-L9Irj_YqrbKhe2DhINbZfiCT9ZOhxXji13yLova1LIquoYt7ndeHaJnjj1pckDg7hauGSLQ',
+              refresh_token:
+                "1//0gHq0bHxNdgcbCgYIARAAGBASNwF-L9Irj_YqrbKhe2DhINbZfiCT9ZOhxXji13yLova1LIquoYt7ndeHaJnjj1pckDg7hauGSLQ",
               grant_type: "refresh_token",
             }
           );
-          auth.setCredentials(token.data)
-          console.log(token.data.id_token)
+          auth.setCredentials(token.data);
+          console.log(token.data.id_token);
           res.status(200).send({
             message: "access token has been set",
-            access_token: token.data.access_token
-          })
+            access_token: token.data.access_token,
+          });
         } catch (err) {
           // console.log(err)
-          res.send({message: err})
+          res.send({ message: err });
         }
       } else {
         const url = getConnectionUrl(auth);
@@ -98,7 +102,6 @@ app.get("/authorization/:email", async (req, res) => {
       }
     }
   });
-
 });
 
 async function getEmailFromIdToken(id_token) {
@@ -136,6 +139,54 @@ app.get("/auth/google/callback", async (req, res) => {
   }
 });
 
+app.post("/createZoomMeeting", Zoomauth.addToken, async (req, res) => {
+  try {
+    const token = req.body.token;
+    const email = "testingkeliyehaibro@gmail.com"; //host email id;
+    const result = await axios.post(
+      "https://api.zoom.us/v2/users/" + email + "/meetings",
+      {
+        topic: "Discussion about today's Demo",
+        type: 2,
+        start_time: "2022-03-22T17:00:00",
+        duration: 20,
+        timezone: "India",
+        password: "1234567",
+        agenda: "We will discuss about Today's Demo process",
+        settings: {
+          host_video: true,
+          participant_video: true,
+          cn_meeting: false,
+          in_meeting: true,
+          join_before_host: false,
+          mute_upon_entry: false,
+          watermark: false,
+          use_pmi: false,
+          approval_type: 2,
+          audio: "both",
+          auto_recording: "local",
+          enforce_login: false,
+          registrants_email_notification: false,
+          waiting_room: true,
+          allow_multiple_devices: true,
+        },
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+          "User-Agent": "Zoom-api-Jwt-Request",
+          "content-type": "application/json",
+        },
+      }
+    );
+    console.log(result.data);
+    // sendResponse.setSuccess(200, 'Success', result.data);
+    // return sendResponse.send(res);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 app.get("/getEvents/:id", async (req, res) => {
   let calendarId = req.params.id;
   // console.log(calendarID);
@@ -168,7 +219,7 @@ app.get("/getEvents/:id", async (req, res) => {
 
 app.post("/getUsersSchedule", async (req, res) => {
   // auth.setCredentials(mainToken);
-  console.log("hetUSERSCHEDULE",tokenData)
+  console.log("hetUSERSCHEDULE", tokenData);
   auth.credentials = {
     access_token: tokenData.access_token,
     refresh_token: tokenData.refresh_token,
@@ -262,7 +313,7 @@ app.post("/createEvent", (req, res) => {
     });
   });
 
-app.post("/getCalendar/:email", (req, res) => {
+app.get("/getCalendar/:email", (req, res) => {
   let body = req.body;
   // let sql = `INSERT INTO demo VALUES(${null},'john wick')`
   let email = req.params.email;
@@ -274,20 +325,21 @@ app.post("/getCalendar/:email", (req, res) => {
       console.log(err);
       return res.status(400);
     }
-    if(result[0]===undefined) {
+    if (result.length == 0) {
       return res.status(200).send({
         status: false,
-        message: 'No record found with specific email id',
-        data: []
-      })
+        message: "No record found with specific email id",
+        data: [],
+      });
     }
     let sql = `SELECT refresh_token FROM user_auth WHERE email = '${result[0].email}'`;
-    db.query(sql, async (err ,result2) => {
-      if(err){
+    db.query(sql, async (err, result2) => {
+      if (err) {
         console.log(err);
         return res.status(400).send(err);
       }
       try {
+        console.log("RESULT", result2);
         let token = await axios.post(
           "https://www.googleapis.com/oauth2/v4/token",
           {
@@ -305,43 +357,118 @@ app.post("/getCalendar/:email", (req, res) => {
         };
         tokenData = {
           access_token: token.data.access_token,
-          refresh_token: result2[0].refresh_token
-        }
-        return res.status(200).send({data : {...result[0],...result2[0],access_token : token.data.access_token}, status: true}); 
-        }catch(err){
-          console.log(err);
-          return res.status(400).send(err);
-        } 
-    })
+          refresh_token: result2[0].refresh_token,
+        };
+        return res.status(200).send({
+          data: result,
+          refresh_token: tokenData.refresh_token,
+          access_token: tokenData.access_token,
+          status: true,
+        });
+      } catch (err) {
+        console.log(err);
+        return res.status(400).send(err);
+      }
+    });
     //return res.status(200).send(result[0]);
   });
 });
 
 app.post("/getValidToken", async (req, res) => {
   try {
-    let token = await axios.post(
-      "https://www.googleapis.com/oauth2/v4/token",
-      {
-        client_id:
-          "567130593726-cgsmtpsmh4jbi6dvhhvdp1rfv1u99vrj.apps.googleusercontent.com",
-        client_secret: "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",
-        refresh_token: req.body.refresh_token,
-        grant_type: "refresh_token",
-      }
-    );
+    let token = await axios.post("https://www.googleapis.com/oauth2/v4/token", {
+      client_id:
+        "567130593726-cgsmtpsmh4jbi6dvhhvdp1rfv1u99vrj.apps.googleusercontent.com",
+      client_secret: "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",
+      refresh_token: req.body.refresh_token,
+      grant_type: "refresh_token",
+    });
     auth.credentials = {
       access_token: token.data.access_token,
       refresh_token: req.body.refresh_token,
     };
     tokenData = {
       access_token: token.data.access_token,
-      refresh_token: req.body.refresh_token
-    }
-    return res.status(200).send("access token set"); 
-    }catch(err){
+      refresh_token: req.body.refresh_token,
+    };
+    return res.status(200).send("access token set");
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err);
+  }
+});
+
+app.post("/editCalendar", async (req, res) => {
+  try {
+    let sql = `UPDATE user_calendar SET ? WHERE id=${req.body.id}`;
+    db.query(sql, [req.body], async (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send({
+          message: err,
+          status: false,
+        });
+      }
+      return res.status(200).send({
+        message: "updated successfully",
+        status: true,
+      });
+    });
+  } catch (err) {}
+});
+
+app.delete("/deleteCalendar/:id", (req, res) => {
+  let id = req.params.id;
+  let sql = "DELETE FROM `user_calendar` WHERE `id`=?";
+  db.query(sql, id, (err, result) => {
+    if (err) {
       console.log(err);
-      return res.status(400).send(err);
-    } 
+      return res.status(400).send({
+        message: err,
+        status: false,
+      });
+    }
+    return res.status(200).send({
+      message: "Record deleted successfully",
+      status: true,
+    });
+  });
+});
+
+// --------------ZOOM API-----------
+
+app.get("/zoom", (req, res) => {
+  let clientId = "G9mzSvDdTsODfLUi8qwbZQ";
+  let redired_url = "http://localhost:3000/auth/zoom/callback";
+  let url =
+    "https://zoom.us/oauth/authorize?response_type=code&client_id=" +
+    clientId +
+    "&redirect_uri=" +
+    redired_url;
+  res.send(url);
+});
+
+app.get("/auth/zoom/callback", async (req, res) => {
+  let redired_url = "http://localhost:3000/auth/zoom/callback";
+  try {
+    if (req.query.code) {
+      console.log("code", req.query.code)
+      let url = 'https://zoom.us/oauth/token?grant_type=authorization_code&code=' + req.query.code + '&redirect_uri=' + redired_url;
+
+      let headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization:
+          "Basic RzltelN2RGRUc09EZkxVaThxd2JaUTozSlcwcGNyNmg5M3ZVcFp3cEJmU0YydE5TRDYwdFU1MQ==",
+      };
+      let result = await axios.post(url, null, {
+        headers: headers,
+      });
+      let token = result.data
+      console.log(token)
+    }
+  } catch (err) {
+    console.log(err)
+  }
 });
 
 app.listen(port, () => {

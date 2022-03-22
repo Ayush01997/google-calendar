@@ -7,10 +7,12 @@ import { SetupCalendarComponent } from './setup-calendar/setup-calendar.componen
 import { ValidateAuthComponent } from './validate-auth/validate-auth.component';
 import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
 import { SetupEventComponent } from './calendar/setup-event/setup-event.component';
+import { DashboardComponent } from './calendar/dashboard/dashboard.component';
 
 
 const routes: Routes = [
   {path: "", component: SetupCalendarComponent},
+  {path: "dashboard", component: DashboardComponent},
   {path: "viewCalendar", component: ViewCalendarComponent},
   {path: "validate-auth", component: ValidateAuthComponent},
   {path : '', component : CalendarComponent, children : [

@@ -1,0 +1,4 @@
+1. edit and delete calendar/event
+2. client side no location.
+3. one email id can have upto 3 events for now.
+4. mail both side.

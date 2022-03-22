@@ -15,3 +15,18 @@
     color: var(--primary-color, rgb(0, 105, 255));
     border: 1px solid var(--primary-color-level2, rgba(0, 105, 255, 0.5));
 }
+.container {
+    margin-top: 3rem;
+}
+.calendar-details .user-name h3 {
+    color: grey;
+    font-size: 25px;
+}
+
+.calendar-details .title p {
+    font-weight: bold;
+}
+
+.calendar-details .duration p {
+    color: grey;
+}
