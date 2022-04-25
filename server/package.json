@@ -10,10 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/msal-node": "^1.8.0",
+    "@microsoft/microsoft-graph-client": "^3.0.2",
     "axios": "^0.26.0",
     "body-parser": "^1.19.1",
     "express": "^4.17.2",
     "googleapis": "^39.2.0",
+    "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.15"

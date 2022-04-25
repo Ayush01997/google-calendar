@@ -19,4 +19,8 @@ export class SetupCalendarComponent implements OnInit {
     this.authService.getAuth()
   }
 
+  onSetupTeam() {
+    this.authService.getTeamAuth()
+  }
+
 }

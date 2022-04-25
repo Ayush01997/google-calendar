@@ -22,4 +22,20 @@ export class AuthService {
       }
     });
   }
+
+  getTeamAuth() {
+    let authUrl = "http://localhost:3000/signin";
+    this.http.get<any>(authUrl).subscribe((res) => {
+      console.log("res", res)
+      if (res.authUrl) {
+        window.open(res.authUrl);
+      } else {
+        console.log("first")
+        this.router.navigate(
+          ["/validate-auth"], 
+          { queryParams: { access_token: res.access_token }, queryParamsHandling: 'merge', skipLocationChange: true}
+          );
+      }
+    });
+  }
 }
