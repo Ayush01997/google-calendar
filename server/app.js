@@ -6,6 +6,28 @@ const { google } = require("googleapis");
 const app = express();
 const db = require("./config/db.connectiom");
 const axios = require("axios");
+const msal = require('@azure/msal-node');
+const graph = require('./graph');
+
+const msalConfig = {
+  auth: {
+    clientId: 'c84d0ac9-2445-48bb-8080-fb6503386ce2',
+    authority: 'https://login.microsoftonline.com/common/',
+    clientSecret: 'cSA8Q~P~LxK9hnNwEDbiMnBi.owHFWvpufsJXc1x'
+  },
+  system: {
+    loggerOptions: {
+      loggerCallback(loglevel, message, containsPii) {
+        console.log(message);
+      },
+      piiLoggingEnabled: false,
+      logLevel: msal.LogLevel.Verbose,
+    }
+  }
+}
+
+app.locals.msalClient = new msal.ConfidentialClientApplication(msalConfig);
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -470,6 +492,113 @@ app.get("/auth/zoom/callback", async (req, res) => {
     console.log(err)
   }
 });
+
+
+app.get('/signin',
+  async function (req, res) {
+    const urlParameters = {
+      scopes: 'user.read,calendars.readwrite,mailboxsettings.read'.split(','),
+      redirectUri: 'http://localhost:3000/azure/callback'
+    };
+
+    try {
+      const authUrl = await req.app.locals
+        .msalClient.getAuthCodeUrl(urlParameters);
+      //res.redirect(authUrl);
+      res.send({
+        authUrl
+      });
+    }
+    catch (error) {
+      console.log(`Error: ${error}`);
+      res.redirect('/');
+    }
+  }
+);
+
+app.get('/azure/callback',
+  async function(req, res) {
+    const tokenRequest = {
+      code: req.query.code,
+      scopes: 'user.read,calendars.readwrite,mailboxsettings.read'.split(','),
+      redirectUri: 'http://localhost:3000/azure/callback'
+    };
+
+    try {
+      const response = await req.app.locals
+        .msalClient.acquireTokenByCode(tokenRequest);
+      console.log("************ reqponse ***************",response)
+      // Save the user's homeAccountId in their session
+      req.session.userId = response.account.homeAccountId;
+      //console.log("************ req.session.userid ***************", req.session.userId)
+      // const user = await graph.getUserDetails(
+      //   req.app.locals.msalClient,
+      //   req.session.userId
+      // );
+
+      // // Add the user to user storage
+      // req.app.locals.users[req.session.userId] = {
+      //   displayName: user.displayName,
+      //   email: user.mail || user.userPrincipalName,
+      //   timeZone: user.mailboxSettings.timeZone
+      // };
+      // if (Object.keys(tokenData).length > 0) {
+      //   res.redirect(
+      //     `http://localhost:4200/validate-auth?id_token=${tokenData.id_token}&refresh_token=${tokenData.refresh_token}`
+      //   );
+      // } else {
+      //   res.status(400).send("issue");
+      // }
+    } catch(error) {
+      console.log(`Error: ${error}`)
+    }
+
+    res.redirect('/');
+  }
+);
+
+app.post('/createTeamEvent', async (req, res) => {
+  const formData = {
+    subject: req.body.subject,
+    attendees: req.body.attendees,
+    start: req.body.start,
+    end: req.body.end,
+    body: req.body.body
+  };
+  console.log("FORMATA", formData)
+  // Check if there are any errors with the form values
+  // const formErrors = validationResult(req);
+  // if (!formErrors.isEmpty()) {
+
+  //   let invalidFields = '';
+  //   formErrors.errors.forEach(error => {
+  //     invalidFields += `${error.param.slice(3, error.param.length)},`
+  //   });
+
+  //   // Preserve the user's input when re-rendering the form
+  //   // Convert the attendees array back to a string
+  //   formData.attendees = formData.attendees.join(';');
+  //   return res.render('newevent', {
+  //     newEvent: formData,
+  //     error: [{ message: `Invalid input in the following fields: ${invalidFields}` }]
+  //   });
+  // }
+
+  // Get the user
+  const user = '00000000-0000-0000-e45b-4bd969083b8a.9188040d-6c67-4c5b-b112-36a304b66dad'
+
+  // Create the event
+  try {
+    await graph.createEvent(
+      req.app.locals.msalClient,
+      '00000000-0000-0000-e45b-4bd969083b8a.9188040d-6c67-4c5b-b112-36a304b66dad',
+      formData,
+      "Asia/Kolkata"
+    );
+  } catch (error) {
+    console.log(`Error2: ${error}`)
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
