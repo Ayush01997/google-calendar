@@ -24,7 +24,7 @@ export class AuthService {
   }
 
   getTeamAuth() {
-    let authUrl = "http://localhost:3000/signin";
+    let authUrl = "http://localhost:3000/signin/ayush@msleadangel.com";
     this.http.get<any>(authUrl).subscribe((res) => {
       console.log("res", res)
       if (res.authUrl) {
@@ -32,7 +32,7 @@ export class AuthService {
       } else {
         console.log("first")
         this.router.navigate(
-          ["/validate-auth"], 
+          ["/validate-team-auth"], 
           { queryParams: { access_token: res.access_token }, queryParamsHandling: 'merge', skipLocationChange: true}
           );
       }

@@ -31,22 +31,37 @@ export class CreateEventComponent implements OnInit {
   }
 
   onSubmit(setupEvent) {
-    let body = {
-      summary: setupEvent.value.eventName,
-      description: setupEvent.value.eventDescription,
-      start: {
-        dateTime: this.eventStartDateTime,
-        timeZone: 'Asia/Kolkata',
-      },
-      end: {
-        dateTime: this.eventEndDateTime,
-        timeZone: 'Asia/Kolkata',
-      },
-      attendees: [{ email: setupEvent.value.email }],
-    };
-    console.log(this.shared.getData());
-
-    this.shared.createEvent(body).subscribe(
+    console.log("setupEvent.value.location",setupEvent.value.location)
+    console.log(this.eventStartDateTime)
+    if(setupEvent.value.location == 'Microsoft'){
+      let body =
+      {
+        "subject":setupEvent.value.eventName,
+        "body": {
+         "ContentType": "HTML",
+         "Content": setupEvent.value.eventDescription
+       },
+        "start":{
+           "dateTime":this.eventStartDateTime.format('YYYY-MM-DD[T]HH:mm:ssZ').split('+')[0],
+           "timeZone":"Asia/Kolkata"
+        },
+        "end":{
+           "dateTime":this.eventEndDateTime.split('+')[0],
+           "timeZone":"Asia/Kolkata"
+        },
+        "attendees":[
+           {
+              "emailAddress":{
+                 "address":setupEvent.value.email,
+              },
+              "type":"required"
+           }
+        ],
+       "allowNewTimeProposals": true,
+       "isOnlineMeeting": true,
+       "onlineMeetingProvider": "teamsForBusiness"
+     }
+     this.shared.createTeamEvent(body).subscribe(
       (res) => {
         console.log(res);
         this.createDialog({ ...body, location: setupEvent.value.location });
@@ -55,6 +70,32 @@ export class CreateEventComponent implements OnInit {
         console.log(err);
       }
     );
+    }else{
+      let body = {
+        summary: setupEvent.value.eventName,
+        description: setupEvent.value.eventDescription,
+        start: {
+          dateTime: this.eventStartDateTime,
+          timeZone: 'Asia/Kolkata',
+        },
+        end: {
+          dateTime: this.eventEndDateTime,
+          timeZone: 'Asia/Kolkata',
+        },
+        attendees: [{ email: setupEvent.value.email }],
+      };
+      console.log(this.shared.getData());
+  
+      this.shared.createEvent(body).subscribe(
+        (res) => {
+          console.log(res);
+          this.createDialog({ ...body, location: setupEvent.value.location });
+        },
+        (err) => {
+          console.log(err);
+        }
+      );  
+    } 
   }
 
   createDialog(data) {
@@ -64,8 +105,8 @@ export class CreateEventComponent implements OnInit {
     console.log(startTime, endTime, day);
     let sharedData = this.shared.getData();
     let body = {
-      summary: data.summary,
-      description: data.description,
+      summary: data.location == 'Microsoft' ? data.subject : data.summary,
+      description: data.location == 'Microsoft' ? data.body.Content : data.description,
       name: sharedData.name,
       location: data.location,
       time: `${startTime} - ${endTime} ${day}`,
