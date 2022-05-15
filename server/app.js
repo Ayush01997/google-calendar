@@ -57,6 +57,7 @@ const defaultScope = [
 
 // accessToken variable
 var tokenData = {};
+var teamTokenData = {}
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -362,31 +363,35 @@ app.get("/getCalendar/:email", (req, res) => {
       }
       try {
         console.log("RESULT", result2);
-        let token = await axios.post(
-          "https://www.googleapis.com/oauth2/v4/token",
-          {
-            client_id:
-              "567130593726-cgsmtpsmh4jbi6dvhhvdp1rfv1u99vrj.apps.googleusercontent.com",
-            client_secret: "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",
-            refresh_token: result2[0].refresh_token,
-            grant_type: "refresh_token",
-          }
-        );
-        // console.log("TOOEEEEEEEEEEEEEN", token.data)
-        auth.credentials = {
-          access_token: token.data.access_token,
-          refresh_token: result2[0].refresh_token,
-        };
-        tokenData = {
-          access_token: token.data.access_token,
-          refresh_token: result2[0].refresh_token,
-        };
-        return res.status(200).send({
-          data: result,
-          refresh_token: tokenData.refresh_token,
-          access_token: tokenData.access_token,
-          status: true,
-        });
+        // let token = await axios.post(
+        //   "https://www.googleapis.com/oauth2/v4/token",
+        //   {
+        //     client_id:
+        //       "567130593726-cgsmtpsmh4jbi6dvhhvdp1rfv1u99vrj.apps.googleusercontent.com",
+        //     client_secret: "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",
+        //     refresh_token: result2[0].refresh_token,
+        //     grant_type: "refresh_token",
+        //   }
+        // );
+        // // console.log("TOOEEEEEEEEEEEEEN", token.data)
+        // auth.credentials = {
+        //   access_token: token.data.access_token,
+        //   refresh_token: result2[0].refresh_token,
+        // };
+        // tokenData = {
+        //   access_token: token.data.access_token,
+        //   refresh_token: result2[0].refresh_token,
+        // };
+        // return res.status(200).send({
+        //   data: result,
+        //   refresh_token: tokenData.refresh_token,
+        //   access_token: tokenData.access_token,
+        //   status: true,
+        // });
+         return res.status(200).send({
+            data: result,
+            status: true
+          });
       } catch (err) {
         console.log(err);
         return res.status(400).send(err);
@@ -494,25 +499,62 @@ app.get("/auth/zoom/callback", async (req, res) => {
 });
 
 
-app.get('/signin',
+app.get('/signin/:email',
   async function (req, res) {
-    const urlParameters = {
-      scopes: 'user.read,calendars.readwrite,mailboxsettings.read'.split(','),
-      redirectUri: 'http://localhost:3000/azure/callback'
-    };
-
-    try {
-      const authUrl = await req.app.locals
-        .msalClient.getAuthCodeUrl(urlParameters);
-      //res.redirect(authUrl);
-      res.send({
-        authUrl
+    let email = req.params.email;
+  let sql = `SELECT refresh_token FROM user_auth WHERE email=?`;
+  db.query(sql, email, async (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send({
+        message: err,
       });
+    } else {
+      console.log(result[0]);
+      if (result[0]) {
+        console.log(result[0].refresh_token);
+        try {
+          let token = await axios.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', new URLSearchParams({
+              client_id: 'c84d0ac9-2445-48bb-8080-fb6503386ce2', //gave the values directly for testing
+              refresh_token: result[0].refresh_token,
+              redirect_uri: 'http://localhost:3000/azure/callback',
+              grant_type : 'refresh_token',
+              client_secret : 'cSA8Q~P~LxK9hnNwEDbiMnBi.owHFWvpufsJXc1x'
+            }))
+          console.log("88888888888",token);
+          teamTokenData = {
+            accessToken : token.data.access_token,
+            refreshToken : token.data.refresh_token
+          }
+          res.status(200).send({
+            message: "access token has been set",
+            access_token: token.data.access_token,
+          });
+        } catch (err) {
+          // console.log(err)
+          res.send({ message: err });
+        }
+      } else {
+        const urlParameters = {
+          scopes: 'offline_access,user.read,Calendars.ReadWrite,OnlineMeetings.ReadWrite'.split(','),
+          redirectUri: 'http://localhost:3000/azure/callback'
+        };
+    
+        try {
+          const authUrl = await req.app.locals
+            .msalClient.getAuthCodeUrl(urlParameters);
+          //res.redirect(authUrl);
+          res.send({
+            authUrl
+          });
+        }
+        catch (error) {
+          console.log(`Error: ${error}`);
+          res.redirect('/');
+        }
+      }
     }
-    catch (error) {
-      console.log(`Error: ${error}`);
-      res.redirect('/');
-    }
+  });
   }
 );
 
@@ -520,16 +562,16 @@ app.get('/azure/callback',
   async function(req, res) {
     const tokenRequest = {
       code: req.query.code,
-      scopes: 'user.read,calendars.readwrite,mailboxsettings.read'.split(','),
+      scopes: 'offline_access,user.read,Calendars.ReadWrite,OnlineMeetings.ReadWrite'.split(','),
       redirectUri: 'http://localhost:3000/azure/callback'
     };
 
     try {
       const response = await req.app.locals
         .msalClient.acquireTokenByCode(tokenRequest);
-      console.log("************ reqponse ***************",response)
+      //console.log("************ reqponse ***************",response)
       // Save the user's homeAccountId in their session
-      req.session.userId = response.account.homeAccountId;
+      //req.session.userId = response.account.homeAccountId;
       //console.log("************ req.session.userid ***************", req.session.userId)
       // const user = await graph.getUserDetails(
       //   req.app.locals.msalClient,
@@ -542,30 +584,68 @@ app.get('/azure/callback',
       //   email: user.mail || user.userPrincipalName,
       //   timeZone: user.mailboxSettings.timeZone
       // };
-      // if (Object.keys(tokenData).length > 0) {
-      //   res.redirect(
-      //     `http://localhost:4200/validate-auth?id_token=${tokenData.id_token}&refresh_token=${tokenData.refresh_token}`
-      //   );
-      // } else {
-      //   res.status(400).send("issue");
-      // }
+      const accessToken = response.accessToken;
+      const refreshToken = () => {
+          const tokenCache = app.locals.msalClient.getTokenCache().serialize();
+          const refreshTokenObject = (JSON.parse(tokenCache)).RefreshToken
+          const refreshToken = refreshTokenObject[Object.keys(refreshTokenObject)[0]].secret;
+          return refreshToken;
+      }
+      const tokens = {
+          accessToken,
+          refreshToken:refreshToken()
+      }
+      teamTokenData = {
+        accessToken : tokens.accessToken,
+        refreshToken : tokens.refreshToken
+      }
+      let sql = `INSERT INTO user_auth VALUES(${null},'${response.account.username}','${
+        tokens.refreshToken
+      }')`;
+      db.query(sql, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("recrod inserted");
+        }
+      });
+      if (Object.keys(response).length > 0) {
+        res.redirect(
+          `http://localhost:4200/validate-team-auth?access_token=${response.accessToken}`
+        );
+      } else {
+        res.status(400).send("issue");
+      }
     } catch(error) {
       console.log(`Error: ${error}`)
     }
-
-    res.redirect('/');
   }
 );
 
 app.post('/createTeamEvent', async (req, res) => {
-  const formData = {
-    subject: req.body.subject,
-    attendees: req.body.attendees,
-    start: req.body.start,
-    end: req.body.end,
-    body: req.body.body
-  };
-  console.log("FORMATA", formData)
+  // const formData = {
+  //   subject: req.body.subject,
+  //   attendees: req.body.attendees,
+  //   start: req.body.start,
+  //   end: req.body.end,
+  //   body: req.body.body
+  // };
+  try{
+    let headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${teamTokenData.accessToken}`,
+      "Prefer" : 'outlook.timezone="Pacific Standard Time"'
+    };
+    let result = await axios.post('https://graph.microsoft.com/v1.0/me/events', req.body, {
+      headers: headers,
+    });
+    return res.send({
+      message: "event created",
+    });
+  }catch(e){
+    console.log(e)
+    res.send(e)
+  }
   // Check if there are any errors with the form values
   // const formErrors = validationResult(req);
   // if (!formErrors.isEmpty()) {
@@ -588,16 +668,16 @@ app.post('/createTeamEvent', async (req, res) => {
   const user = '00000000-0000-0000-e45b-4bd969083b8a.9188040d-6c67-4c5b-b112-36a304b66dad'
 
   // Create the event
-  try {
-    await graph.createEvent(
-      req.app.locals.msalClient,
-      '00000000-0000-0000-e45b-4bd969083b8a.9188040d-6c67-4c5b-b112-36a304b66dad',
-      formData,
-      "Asia/Kolkata"
-    );
-  } catch (error) {
-    console.log(`Error2: ${error}`)
-  }
+  // try {
+  //   await graph.createEvent(
+  //     req.app.locals.msalClient,
+  //     '00000000-0000-0000-e45b-4bd969083b8a.9188040d-6c67-4c5b-b112-36a304b66dad',
+  //     formData,
+  //     "Asia/Kolkata"
+  //   );
+  // } catch (error) {
+  //   console.log(`Error2: ${error}`)
+  // }
 })
 
 app.listen(port, () => {

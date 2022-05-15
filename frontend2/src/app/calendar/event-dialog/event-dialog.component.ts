@@ -11,7 +11,6 @@ export class EventDialogComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
   result : any
   ngOnInit(): void {
-    console.log(this.data)
     this.result = this.data
   }
 

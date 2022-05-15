@@ -25,6 +25,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 // material
 import {MatDialogModule} from '@angular/material/dialog';
+import { ValidateTeamAuthComponent } from './validate-team-auth/validate-team-auth.component';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     SetupEventComponent,
     EventDialogComponent,
     DashboardComponent,
-    EditEventComponent
+    EditEventComponent,
+    ValidateTeamAuthComponent
   ],
   imports: [
     RouterModule,

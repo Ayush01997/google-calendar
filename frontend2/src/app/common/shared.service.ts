@@ -32,4 +32,9 @@ export class SharedService {
     let getCalendarUrl = `http://localhost:3000/getUsersSchedule`;
     return this.http.post<any>(getCalendarUrl, data);
   }
+
+  createTeamEvent(data){
+    let getCalendarUrl = `http://localhost:3000/createTeamEvent`;
+    return this.http.post<any>(getCalendarUrl, data);
+  }
 }

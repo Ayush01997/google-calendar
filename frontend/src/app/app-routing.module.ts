@@ -8,6 +8,7 @@ import { ValidateAuthComponent } from './validate-auth/validate-auth.component';
 import { ViewCalendarComponent } from './view-calendar/view-calendar.component';
 import { SetupEventComponent } from './calendar/setup-event/setup-event.component';
 import { DashboardComponent } from './calendar/dashboard/dashboard.component';
+import { ValidateTeamAuthComponent } from './validate-team-auth/validate-team-auth.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
   {path: "dashboard", component: DashboardComponent},
   {path: "viewCalendar", component: ViewCalendarComponent},
   {path: "validate-auth", component: ValidateAuthComponent},
+  {path : "validate-team-auth", component : ValidateTeamAuthComponent},
   {path : '', component : CalendarComponent, children : [
     {path : 'setAvailability', component : SetAvailabilityComponent},
     {path : 'setup-event', component : SetupEventComponent}
